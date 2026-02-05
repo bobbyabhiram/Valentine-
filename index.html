@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Lipi, Will You Be My Valentine?</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Google Font for Romantic Look -->
+  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     html, body {
@@ -77,75 +77,78 @@
 
     /* Second Page */
     #second-page {
-      display: none; 
+      display: none;
       height: 100%;
       width: 100%;
-      display: flex;
-      flex-direction: row;
       position: relative;
+      overflow: hidden;
     }
 
-    #second-page::before {
-      content: "";
+    /* Photo grid */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      width: 100%;
+      height: 100%;
+    }
+
+    .grid-item {
+      background-size: cover;
+      background-position: center;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Overlay for blur */
+    .overlay {
       position: absolute;
       top:0; left:0;
       width:100%; height:100%;
-      background: rgba(255,255,255,0.2); /* subtle overlay to improve contrast */
-      z-index: 0;
-    }
-
-    #second-page .half {
-      width: 50%;
-      height: 100%;
-      background-size: cover;
-      background-position: center;
-      position: relative;
-    }
-
-    #second-page .text-container {
-      position: absolute;
-      top: 20%;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 90%;
-      max-width: 500px;
-      text-align: center;
+      backdrop-filter: blur(5px);
+      background: rgba(0,0,0,0.3);
       z-index: 1;
     }
 
-    #second-page h1 {
-      font-family: 'Dancing Script', cursive;
-      color: #b30059; /* deep pink for skin-toned background */
-      font-size: 6vw;
-      margin: 0.5vh 0;
-      text-shadow: 2px 2px 4px rgba(255,255,255,0.7);
+    /* Center text */
+    .text-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 2;
+      width: 90%;
+      max-width: 400px;
     }
 
-    #second-page p {
+    .text-container h1 {
+      font-family: 'Dancing Script', cursive;
+      font-size: 12vw;
+      color: #ff4d88;
+      text-shadow: 2px 2px 10px rgba(255,255,255,0.7);
+      margin: 0;
+    }
+
+    .text-container p {
       font-family: 'Poppins', sans-serif;
-      color: #8b0000; /* dark red for better contrast */
-      font-size: 4.5vw;
-      margin: 0.5vh 0;
+      font-size: 5vw;
+      color: white;
+      margin-top: 1vh;
+      text-shadow: 1px 1px 6px rgba(0,0,0,0.7);
     }
 
     /* Mobile responsive */
     @media (max-width: 600px) {
-      #second-page {
-        flex-direction: column;
+      .photo-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(3, 1fr);
       }
-      #second-page .half {
-        width: 100%;
-        height: 50%;
+      .text-container h1 {
+        font-size: 16vw;
       }
-      #second-page .text-container {
-        top: 5%;
-        width: 95%;
-      }
-      #second-page h1 {
-        font-size: 8vw;
-      }
-      #second-page p {
-        font-size: 5vw;
+      .text-container p {
+        font-size: 6vw;
       }
     }
 
@@ -165,50 +168,58 @@
   </style>
 </head>
 <body>
-  <!-- First Page -->
-  <div id="first-page">
-    <h1>💖 Lipi, Will You Be My Valentine? 💖</h1>
-    <button id="yes" onclick="yesClick()">Yes 😍</button>
-    <button id="no" onmouseover="moveNo()">No 😜</button>
+
+<!-- First Page -->
+<div id="first-page">
+  <h1>💖 Lipi, Will You Be My Valentine? 💖</h1>
+  <button id="yes" onclick="yesClick()">Yes 😍</button>
+  <button id="no" onmouseover="moveNo()">No 😜</button>
+</div>
+
+<!-- Second Page -->
+<div id="second-page">
+  <div class="photo-grid">
+    <div class="grid-item" style="background-image:url('photo1.JPG');"></div>
+    <div class="grid-item" style="background-image:url('photo2.JPG');"></div>
+    <div class="grid-item" style="background-image:url('photo3.JPG');"></div>
+    <div class="grid-item" style="background-image:url('photo4.JPG');"></div>
+    <div class="grid-item" style="background-image:url('photo5.JPG');"></div>
+    <div class="grid-item" style="background-image:url('photo6.JPG');"></div>
   </div>
-
-  <!-- Second Page -->
-  <div id="second-page">
-    <div class="half" id="left-half" style="background-image: url('photo1.JPG');"></div>
-    <div class="half" id="right-half" style="background-image: url('photo2.JPG');"></div>
-    <div class="text-container">
-      <h1>😍 Yay! I Love You, Lipi 💕</h1>
-      <p>Happy Valentine’s Day 💝<br>From your forever fan, Abhiram 😘</p>
-    </div>
+  <div class="overlay"></div>
+  <div class="text-container">
+    <h1>💖 LOVE YOU 💖</h1>
+    <p>Every moment with you is magical, Lipi 😘<br>You are my heart, my joy, my everything 💕</p>
   </div>
+</div>
 
-  <script>
-    function yesClick() {
-      document.getElementById('first-page').style.display = 'none';
-      const second = document.getElementById('second-page');
-      second.style.display = 'flex';
-      launchConfetti(50);
-    }
+<script>
+  function yesClick() {
+    document.getElementById('first-page').style.display = 'none';
+    document.getElementById('second-page').style.display = 'block';
+    launchConfetti(50);
+  }
 
-    function moveNo() {
-      const x = Math.random() * (window.innerWidth - 120);
-      const y = Math.random() * (window.innerHeight - 60);
-      const noBtn = document.getElementById("no");
-      noBtn.style.left = x + "px";
-      noBtn.style.top = y + "px";
-    }
+  function moveNo() {
+    const x = Math.random() * (window.innerWidth - 120);
+    const y = Math.random() * (window.innerHeight - 60);
+    const noBtn = document.getElementById("no");
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+  }
 
-    function launchConfetti(amount) {
-      for (let i = 0; i < amount; i++) {
-        const heart = document.createElement('div');
-        heart.className = 'heart';
-        heart.innerText = '💖';
-        heart.style.left = Math.random() * window.innerWidth + 'px';
-        heart.style.fontSize = (15 + Math.random() * 25) + 'px';
-        document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 2000);
-      }
+  function launchConfetti(amount) {
+    for (let i = 0; i < amount; i++) {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.innerText = '💖';
+      heart.style.left = Math.random() * window.innerWidth + 'px';
+      heart.style.fontSize = (15 + Math.random() * 25) + 'px';
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 2000);
     }
-  </script>
+  }
+</script>
+
 </body>
 </html>
