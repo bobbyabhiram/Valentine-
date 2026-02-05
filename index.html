@@ -1,198 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Lipi, Will You Be My Valentine?</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Lipi, Will You Be My Valentine?</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      width: 100%;
-      font-family: 'Poppins', sans-serif;
-      overflow: hidden;
-    }
+<style>
 
-    /* ================= FIRST PAGE ================= */
+html, body {
+  margin:0;
+  padding:0;
+  height:100%;
+  width:100%;
+  font-family:'Poppins', sans-serif;
+  overflow:hidden;
+}
 
-    #first-page {
-      height: 100%;
-      width: 100%;
-      background: url('background.JPG') no-repeat center center fixed;
-      background-size: cover;
+/* ================= FIRST PAGE ================= */
 
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
+#first-page {
+  height:100%;
+  width:100%;
+  background:url('background.JPG') no-repeat center center fixed;
+  background-size:cover;
 
-      position: relative;
-    }
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  position:relative;
+}
 
-    #first-page::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.3);
-    }
+#first-page::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.25);
+}
 
-    #first-page h1 {
-      font-family: 'Dancing Script', cursive;
-      font-size: 8vw;
-      color: white;
-      z-index: 1;
-      text-shadow: 2px 2px 8px black;
-      margin-bottom: 40px;
-    }
+#first-page h1{
+  font-family:'Dancing Script',cursive;
+  font-size:8vw;
+  color:white;
+  z-index:1;
+  text-shadow:2px 2px 8px black;
+  margin-bottom:40px;
+}
 
-    #first-page button {
-      font-size: 5vw;
-      padding: 15px 35px;
-      margin: 10px;
-      border: none;
-      border-radius: 25px;
-      cursor: pointer;
-      z-index: 1;
-      font-family: 'Poppins', sans-serif;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
-    }
+#first-page button{
+  font-size:5vw;
+  padding:15px 35px;
+  margin:10px;
+  border:none;
+  border-radius:25px;
+  cursor:pointer;
+  z-index:1;
+  box-shadow:0 4px 8px rgba(0,0,0,0.4);
+}
 
-    #yes {
-      background: #ff4d88;
-      color: white;
-    }
+#yes{
+  background:#ff4d88;
+  color:white;
+}
 
-    #no {
-      background: #444;
-      color: white;
-      position: absolute;
-    }
+#no{
+  background:#444;
+  color:white;
+  position:absolute;
+}
 
-    /* ================= SECOND PAGE ================= */
+/* ================= SECOND PAGE ================= */
 
-    #second-page {
-      display: none;
-      height: 100%;
-      width: 100%;
-      position: relative;
-      overflow: hidden;
-    }
+#second-page{
+  display:none;
+  height:100%;
+  width:100%;
+  position:relative;
+  overflow:hidden;
+}
 
-    /* Photo Grid */
+/* Photo Grid */
 
-    .photo-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(2, 1fr);
-      height: 100%;
-      width: 100%;
-    }
+.photo-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  grid-template-rows:repeat(2,1fr);
+  height:100%;
+  width:100%;
+}
 
-    .grid-item {
-      background-size: cover;
-      background-position: center;
-    }
+.grid-item{
+  background-size:cover;
+  background-position:center;
+}
 
-    /* Light Blur Overlay (NOT FULL BLUR) */
+/* Very Light Blur */
 
-    .overlay {
-      position: absolute;
-      inset: 0;
+.overlay{
+  position:absolute;
+  inset:0;
+  backdrop-filter:blur(1px);
+  background:rgba(0,0,0,0.08);
+  z-index:1;
+}
 
-      backdrop-filter: blur(2px); /* Light blur only */
-      background: rgba(0,0,0,0.15); /* Light dark overlay */
+/* Center Card */
 
-      z-index: 1;
-    }
+.text-container{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
 
-    /* Center Message */
+  width:90%;
+  max-width:420px;
+  text-align:center;
+  z-index:2;
 
-    .text-container {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+  background:rgba(255,255,255,0.18);
+  padding:25px;
+  border-radius:20px;
+  backdrop-filter:blur(4px);
+}
 
-      width: 90%;
-      max-width: 420px;
+.text-container h1{
+  font-family:'Dancing Script',cursive;
+  font-size:12vw;
+  color:#ff2f7a;
+  text-shadow:2px 2px 10px white;
+  margin:0;
+}
 
-      text-align: center;
-      z-index: 2;
+.text-container p{
+  font-size:5vw;
+  color:white;
+  margin-top:15px;
+  text-shadow:1px 1px 6px black;
+}
 
-      background: rgba(255,255,255,0.15);
-      padding: 25px;
-      border-radius: 20px;
-      backdrop-filter: blur(3px);
-    }
+/* Mobile */
 
-    .text-container h1 {
-      font-family: 'Dancing Script', cursive;
-      font-size: 12vw;
-      color: #ff2f7a;
+@media(max-width:600px){
 
-      text-shadow: 2px 2px 10px white;
-      margin: 0;
-    }
+  .photo-grid{
+    grid-template-columns:repeat(2,1fr);
+    grid-template-rows:repeat(3,1fr);
+  }
 
-    .text-container p {
-      font-size: 5vw;
-      color: white;
-      margin-top: 15px;
-      text-shadow: 1px 1px 6px black;
-    }
+  .text-container h1{
+    font-size:16vw;
+  }
 
-    /* Mobile Layout */
+  .text-container p{
+    font-size:6vw;
+  }
+}
 
-    @media (max-width: 600px) {
+/* ================= HEARTS ================= */
 
-      .photo-grid {
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: repeat(3, 1fr);
-      }
+.heart{
+  position:absolute;
+  font-size:25px;
+  pointer-events:none;
+  animation:floatUp 2s ease-out forwards;
+  z-index:5;
+}
 
-      .text-container h1 {
-        font-size: 16vw;
-      }
+@keyframes floatUp{
+  0%{transform:translateY(0) scale(1);opacity:1;}
+  100%{transform:translateY(-250px) scale(1.5);opacity:0;}
+}
 
-      .text-container p {
-        font-size: 6vw;
-      }
-    }
+/* ================= SPARKLES ================= */
 
-    /* ================= HEART ANIMATION ================= */
+.sparkle{
+  position:absolute;
+  font-size:20px;
+  pointer-events:none;
+  animation:spark 1s ease-out forwards;
+  z-index:6;
+}
 
-    .heart {
-      position: absolute;
-      font-size: 25px;
-      pointer-events: none;
-      animation: floatUp 2s ease-out forwards;
-      z-index: 5;
-    }
+@keyframes spark{
+  0%{opacity:1;transform:scale(1);}
+  100%{opacity:0;transform:scale(2);}
+}
 
-    @keyframes floatUp {
-      0% {
-        transform: translateY(0) scale(1);
-        opacity: 1;
-      }
+/* ================= BEAR ================= */
 
-      100% {
-        transform: translateY(-250px) scale(1.5);
-        opacity: 0;
-      }
-    }
+.bear{
+  position:absolute;
+  font-size:60px;
+  animation:bearPop 2.5s ease-out forwards;
+  z-index:7;
+}
 
-  </style>
+@keyframes bearPop{
+  0%{transform:scale(0);opacity:0;}
+  30%{transform:scale(1.2);opacity:1;}
+  70%{transform:scale(1);}
+  100%{transform:scale(0);opacity:0;}
+}
+
+</style>
 </head>
 
 <body>
 
-<!-- ========== FIRST PAGE ========== -->
+<!-- ================= FIRST PAGE ================= -->
 
 <div id="first-page">
 
@@ -203,7 +222,7 @@
 
 </div>
 
-<!-- ========== SECOND PAGE ========== -->
+<!-- ================= SECOND PAGE ================= -->
 
 <div id="second-page">
 
@@ -226,58 +245,107 @@
 
     <p>
       Every moment with you is magical, Lipi 😘<br>
-      You are my happiness, my heart, my forever 💕
+      You are my heart, my happiness, my forever 💕
+    </p>
+
+    <p style="font-size:4vw;opacity:0.9;margin-top:10px;">
+      ✨ Tap anywhere ✨
     </p>
 
   </div>
 
 </div>
 
-<!-- ========== SCRIPT ========== -->
+<!-- ================= SCRIPT ================= -->
 
 <script>
 
-  function yesClick() {
+function yesClick(){
 
-    document.getElementById('first-page').style.display = "none";
-    document.getElementById('second-page').style.display = "block";
+  document.getElementById('first-page').style.display="none";
+  document.getElementById('second-page').style.display="block";
 
-    launchHearts(60);
+  launchHearts(60);
+  showBear();
+}
+
+/* No Button Run */
+
+function moveNo(){
+
+  const btn=document.getElementById("no");
+
+  const x=Math.random()*(window.innerWidth-120);
+  const y=Math.random()*(window.innerHeight-60);
+
+  btn.style.left=x+"px";
+  btn.style.top=y+"px";
+}
+
+/* Hearts */
+
+function launchHearts(amount){
+
+  for(let i=0;i<amount;i++){
+
+    const heart=document.createElement("div");
+
+    heart.className="heart";
+    heart.innerText="💖";
+
+    heart.style.left=Math.random()*window.innerWidth+"px";
+    heart.style.fontSize=(15+Math.random()*25)+"px";
+
+    document.body.appendChild(heart);
+
+    setTimeout(()=>{heart.remove()},2000);
+  }
+}
+
+/* Sparkles on Tap */
+
+document.addEventListener("click",function(e){
+
+  if(document.getElementById("second-page").style.display==="block"){
+
+    createSparkle(e.clientX,e.clientY);
+    showBear();
+
   }
 
+});
 
-  function moveNo() {
+function createSparkle(x,y){
 
-    const btn = document.getElementById("no");
+  const s=document.createElement("div");
 
-    const x = Math.random() * (window.innerWidth - 120);
-    const y = Math.random() * (window.innerHeight - 60);
+  s.className="sparkle";
+  s.innerText="✨";
 
-    btn.style.left = x + "px";
-    btn.style.top = y + "px";
-  }
+  s.style.left=x+"px";
+  s.style.top=y+"px";
 
+  document.body.appendChild(s);
 
-  function launchHearts(amount) {
+  setTimeout(()=>{s.remove()},1000);
+}
 
-    for (let i = 0; i < amount; i++) {
+/* Bear Kiss */
 
-      const heart = document.createElement("div");
+function showBear(){
 
-      heart.className = "heart";
-      heart.innerText = "💖";
+  const bear=document.createElement("div");
 
-      heart.style.left = Math.random() * window.innerWidth + "px";
-      heart.style.fontSize = (15 + Math.random() * 25) + "px";
+  bear.className="bear";
+  bear.innerText="🧸😘";
 
-      document.body.appendChild(heart);
+  bear.style.left=(window.innerWidth/2-30)+"px";
+  bear.style.top=(window.innerHeight/2-80)+"px";
 
-      setTimeout(() => {
-        heart.remove();
-      }, 2000);
+  document.body.appendChild(bear);
 
-    }
-  }
+  setTimeout(()=>{bear.remove()},2500);
+}
 
 </script>
 
