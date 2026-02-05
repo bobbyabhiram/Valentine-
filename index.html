@@ -5,7 +5,6 @@
 <title>Lipi, Will You Be My Valentine?</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Comic Style Font -->
 <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&display=swap" rel="stylesheet">
 
 <style>
@@ -39,7 +38,7 @@ html, body{
   content:"";
   position:absolute;
   inset:0;
-  background:rgba(0,0,0,0.25);
+  background:rgba(0,0,0,0.35);
 }
 
 #first-page h1{
@@ -48,6 +47,7 @@ html, body{
   z-index:1;
   text-shadow:2px 2px 6px black;
   margin-bottom:40px;
+  padding:0 10px;
 }
 
 #first-page button{
@@ -61,16 +61,8 @@ html, body{
   box-shadow:0 4px 8px rgba(0,0,0,0.4);
 }
 
-#yes{
-  background:#ff4d88;
-  color:white;
-}
-
-#no{
-  background:#444;
-  color:white;
-  position:absolute;
-}
+#yes{ background:#ff4d88; color:white; }
+#no{ background:#444; color:white; position:absolute; }
 
 /* ================= SECOND PAGE ================= */
 
@@ -81,8 +73,6 @@ html, body{
   position:relative;
   overflow:hidden;
 }
-
-/* Photo Grid */
 
 .photo-grid{
   display:grid;
@@ -97,16 +87,13 @@ html, body{
   background-position:center;
 }
 
-/* Light Overlay (No Blur) */
-
 .overlay{
   position:absolute;
   inset:0;
-  background:rgba(0,0,0,0.15);
+  backdrop-filter: blur(6px);
+  background:rgba(0,0,0,0.25);
   z-index:1;
 }
-
-/* Center Card */
 
 .text-container{
   position:absolute;
@@ -114,7 +101,7 @@ html, body{
   left:50%;
   transform:translate(-50%,-50%);
 
-  width:90%;
+  width:92%;
   max-width:420px;
   text-align:center;
   z-index:2;
@@ -126,9 +113,10 @@ html, body{
 
 .text-container h1{
   font-size:12vw;
-  color:#ff2f7a;
-  text-shadow:2px 2px 6px white;
   margin:0;
+  background: linear-gradient(45deg,#ff2f7a,#ff9ac4);
+  -webkit-background-clip:text;
+  color:transparent;
 }
 
 .text-container p{
@@ -138,22 +126,31 @@ html, body{
   text-shadow:1px 1px 5px black;
 }
 
-/* Mobile */
+button.extra{
+  margin-top:10px;
+  font-size:4vw;
+  padding:10px 20px;
+  border:none;
+  border-radius:20px;
+  background:#ff4d88;
+  color:white;
+}
+
+/* ================= MOBILE ================= */
 
 @media(max-width:600px){
+
+  #first-page h1{ font-size:10vw; }
+
+  #first-page button{ font-size:6vw; }
 
   .photo-grid{
     grid-template-columns:repeat(2,1fr);
     grid-template-rows:repeat(3,1fr);
   }
 
-  .text-container h1{
-    font-size:16vw;
-  }
-
-  .text-container p{
-    font-size:6vw;
-  }
+  .text-container h1{ font-size:16vw; }
+  .text-container p{ font-size:6vw; }
 }
 
 /* ================= HEARTS ================= */
@@ -186,20 +183,39 @@ html, body{
   100%{opacity:0;transform:scale(2);}
 }
 
-/* ================= BEAR ================= */
+/* ================= LETTER POPUP ================= */
 
-.bear{
-  position:absolute;
-  font-size:60px;
-  animation:bearPop 2.5s ease-out forwards;
-  z-index:7;
+#letter{
+ display:none;
+ position:fixed;
+ inset:0;
+ background:rgba(0,0,0,0.8);
+ z-index:20;
+ justify-content:center;
+ align-items:center;
+ padding:20px;
 }
 
-@keyframes bearPop{
-  0%{transform:scale(0);opacity:0;}
-  30%{transform:scale(1.2);opacity:1;}
-  70%{transform:scale(1);}
-  100%{transform:scale(0);opacity:0;}
+.letter-box{
+ background:white;
+ padding:25px;
+ border-radius:20px;
+ max-width:420px;
+ text-align:center;
+}
+
+/* ================= FLOATING NOTES ================= */
+
+.note{
+ position:absolute;
+ color:white;
+ font-size:18px;
+ animation:floatNote 5s linear forwards;
+}
+
+@keyframes floatNote{
+ from{transform:translateY(0);opacity:1;}
+ to{transform:translateY(-600px);opacity:0;}
 }
 
 </style>
@@ -207,30 +223,28 @@ html, body{
 
 <body>
 
-<!-- ================= FIRST PAGE ================= -->
+<!-- MUSIC -->
+<audio id="bg-music" loop>
+  <source src="song.mp3" type="audio/mpeg">
+</audio>
 
+<!-- FIRST PAGE -->
 <div id="first-page">
-
   <h1>💖 Lipi, Will You Be My Valentine? 💖</h1>
-
   <button id="yes" onclick="yesClick()">Yes 😍</button>
   <button id="no" onmouseover="moveNo()">No 😜</button>
-
 </div>
 
-<!-- ================= SECOND PAGE ================= -->
-
+<!-- SECOND PAGE -->
 <div id="second-page">
 
   <div class="photo-grid">
-
     <div class="grid-item" style="background-image:url('photo1.JPG')"></div>
     <div class="grid-item" style="background-image:url('photo2.JPG')"></div>
     <div class="grid-item" style="background-image:url('photo3.JPG')"></div>
     <div class="grid-item" style="background-image:url('photo4.JPG')"></div>
     <div class="grid-item" style="background-image:url('photo5.JPG')"></div>
     <div class="grid-item" style="background-image:url('photo6.JPG')"></div>
-
   </div>
 
   <div class="overlay"></div>
@@ -239,20 +253,48 @@ html, body{
 
     <h1>💖 LOVE YOU 💖</h1>
 
-    <p>
-      Every moment with you is magical, Lipi 😘<br>
-      You are my forever, my happiness, my heart 💕
-    </p>
+    <p id="timer"></p>
+    <p id="reasons"></p>
 
-    <p style="font-size:4vw;opacity:0.9;margin-top:10px;">
-      ✨ Tap anywhere ✨
-    </p>
+    <button class="extra" onclick="showLetter()">Read My Love Letter 💌</button>
 
   </div>
-
 </div>
 
-<!-- ================= SCRIPT ================= -->
+<!-- LETTER -->
+<div id="letter">
+  <div class="letter-box">
+
+    <h2>My Dearest Lipi 💖</h2>
+
+    <p>
+    From the moment you walked into my life,
+    everything changed in the most beautiful way.
+    
+    You are the smile I wait for,
+    the peace I search for,
+    and the happiness I never want to lose.
+    
+    Every laugh we share,
+    every hug we hold,
+    every memory we create —
+    becomes my favorite story.
+    
+    Loving you feels like home ❤️
+    Safe, warm, and forever.
+    
+    I don’t just want today with you…
+    I want every tomorrow.
+    
+    You are my heart,
+    my happiness,
+    my forever Valentine 💘
+    </p>
+
+    <button onclick="hideLetter()">Close 💕</button>
+
+  </div>
+</div>
 
 <script>
 
@@ -261,85 +303,96 @@ function yesClick(){
   document.getElementById('first-page').style.display="none";
   document.getElementById('second-page').style.display="block";
 
+  document.getElementById("bg-music").play();
+
   launchHearts(60);
-  showBear();
+  fireworks();
 }
 
-/* No Button Run */
-
 function moveNo(){
-
   const btn=document.getElementById("no");
-
   const x=Math.random()*(window.innerWidth-120);
   const y=Math.random()*(window.innerHeight-60);
-
   btn.style.left=x+"px";
   btn.style.top=y+"px";
 }
 
-/* Hearts */
-
 function launchHearts(amount){
-
+  const emojis=["💖","💕","💘","💝"];
   for(let i=0;i<amount;i++){
-
     const heart=document.createElement("div");
-
     heart.className="heart";
-    heart.innerText="💖";
-
+    heart.innerText=emojis[Math.floor(Math.random()*emojis.length)];
     heart.style.left=Math.random()*window.innerWidth+"px";
-    heart.style.fontSize=(15+Math.random()*25)+"px";
-
     document.body.appendChild(heart);
-
-    setTimeout(()=>{heart.remove()},2000);
+    setTimeout(()=>heart.remove(),2000);
   }
 }
 
-/* Sparkles on Tap */
-
-document.addEventListener("click",function(e){
-
-  if(document.getElementById("second-page").style.display==="block"){
-
-    createSparkle(e.clientX,e.clientY);
-    showBear();
+function fireworks(){
+  for(let i=0;i<20;i++){
+    setTimeout(()=>launchHearts(10), i*200);
   }
-});
+}
 
-function createSparkle(x,y){
+/* TIMER */
+const meetDate=new Date("2025-09-28");
+function updateTimer(){
+ const now=new Date();
+ const diff=now-meetDate;
+ const days=Math.floor(diff/(1000*60*60*24));
+ document.getElementById("timer").innerText=
+ "Loving you for "+days+" days ❤️";
+}
+setInterval(updateTimer,1000);
 
+/* REASONS */
+const reasons=[
+ "Your smile 😍",
+ "Your cute anger 😜",
+ "How you care for me 💕",
+ "Your hugs 🤗",
+ "Everything about you ❤️"
+];
+let i=0;
+setInterval(()=>{
+ document.getElementById("reasons").innerText=
+ "I love you for: "+reasons[i];
+ i=(i+1)%reasons.length;
+},2000);
+
+/* LETTER */
+function showLetter(){
+ document.getElementById("letter").style.display="flex";
+}
+function hideLetter(){
+ document.getElementById("letter").style.display="none";
+}
+
+/* SPARKLES */
+document.addEventListener("click",function(e){
+ if(document.getElementById("second-page").style.display==="block"){
   const s=document.createElement("div");
-
   s.className="sparkle";
   s.innerText="✨";
-
-  s.style.left=x+"px";
-  s.style.top=y+"px";
-
+  s.style.left=e.clientX+"px";
+  s.style.top=e.clientY+"px";
   document.body.appendChild(s);
+  setTimeout(()=>s.remove(),1000);
+ }
+});
 
-  setTimeout(()=>{s.remove()},1000);
-}
-
-/* Bear Kiss */
-
-function showBear(){
-
-  const bear=document.createElement("div");
-
-  bear.className="bear";
-  bear.innerText="🧸😘";
-
-  bear.style.left=(window.innerWidth/2-30)+"px";
-  bear.style.top=(window.innerHeight/2-80)+"px";
-
-  document.body.appendChild(bear);
-
-  setTimeout(()=>{bear.remove()},2500);
-}
+/* FLOATING NOTES */
+const notes=["I miss you 💕","Forever yours ❤️","My queen 👑"];
+setInterval(()=>{
+ const n=document.createElement("div");
+ n.className="note";
+ n.innerText=notes[Math.floor(Math.random()*notes.length)];
+ n.style.left=Math.random()*window.innerWidth+"px";
+ n.style.top=window.innerHeight+"px";
+ document.body.appendChild(n);
+ setTimeout(()=>n.remove(),5000);
+},1500);
 
 </script>
 
