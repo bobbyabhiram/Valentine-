@@ -36,7 +36,11 @@ color:#fff;
 height:100%;width:100%;
 display:flex;flex-direction:column;justify-content:center;align-items:center;
 text-align:center;position:relative;z-index:1;
-background:url(‘background.JPG’) no-repeat center center/cover fixed;
+background-color:var(–dark);
+background-image:url(‘background.JPG’);
+background-repeat:no-repeat;
+background-position:center center;
+background-size:cover;
 }
 
 #first-page::before{
@@ -140,16 +144,15 @@ box-shadow:0 14px 44px rgba(232,67,106,.6);
 
 /* No starts inline, escapes to fixed on hover */
 #no{
-background:rgba(255,255,255,.08);
-color:rgba(255,255,255,.6);
-border:1px solid rgba(255,255,255,.15);
-backdrop-filter:blur(6px);
+background:rgba(60,20,35,.85);
+color:rgba(255,255,255,.8);
+border:1px solid rgba(247,168,184,.3);
 z-index:3;
 transition:background .2s;
 /* NO transition on position/transform — it must JUMP instantly */
 }
 #no.escaped{position:fixed}
-#no:hover{background:rgba(255,255,255,.12)}
+#no:hover{background:rgba(80,25,45,.9)}
 
 /* Yes grows as No is pressed */
 #yes{transition:all .4s cubic-bezier(.4,0,.2,1)}
@@ -157,8 +160,7 @@ transition:background .2s;
 /* Speech bubble that pleads */
 .plead-bubble{
 position:fixed;z-index:50;
-background:linear-gradient(145deg,rgba(255,255,255,.15),rgba(255,255,255,.06));
-backdrop-filter:blur(16px);
+background:rgba(40,15,25,.9);
 border:1px solid rgba(247,168,184,.3);
 border-radius:20px;
 padding:12px 22px;
@@ -173,7 +175,7 @@ content:””;position:absolute;bottom:-8px;left:50%;transform:translateX(-50%)
 width:0;height:0;
 border-left:8px solid transparent;
 border-right:8px solid transparent;
-border-top:8px solid rgba(255,255,255,.1);
+border-top:8px solid rgba(40,15,25,.9);
 }
 .plead-bubble .plead-emoji{font-size:24px;display:block;margin-bottom:4px}
 .plead-bubble .plead-text{
@@ -225,10 +227,11 @@ grid-template-rows:repeat(2,1fr);
 height:100%;width:100%;gap:0;
 }
 
-.photo-cell{position:relative;overflow:hidden}
+.photo-cell{position:relative;overflow:hidden;background-color:var(–wine)}
 .photo-cell .photo-bg{
 position:absolute;
 inset:0;
+background-color:var(–wine);
 background-size:cover;background-position:center;
 transition:transform 8s ease;
 filter:brightness(.75) saturate(1.15);
@@ -249,7 +252,7 @@ z-index:3;width:90%;max-width:440px;
 max-height:92vh;
 overflow-y:auto;
 text-align:center;
-background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.03));
+background:linear-gradient(145deg,rgba(26,10,16,.85),rgba(61,15,30,.8));
 backdrop-filter:blur(16px) saturate(1.3);
 -webkit-backdrop-filter:blur(16px) saturate(1.3);
 border:1px solid rgba(255,255,255,.12);
@@ -470,8 +473,7 @@ box-shadow:0 4px 16px rgba(0,0,0,.3),inset 0 -2px 6px rgba(0,0,0,.2);
 .milestone-toast{
 position:fixed;top:20px;left:50%;transform:translateX(-50%);
 z-index:40;
-background:linear-gradient(135deg,rgba(212,168,83,.2),rgba(232,67,106,.15));
-backdrop-filter:blur(20px);
+background:rgba(40,15,25,.9);
 border:1px solid rgba(212,168,83,.3);
 border-radius:20px;
 padding:14px 28px;
@@ -955,6 +957,35 @@ setInterval(()=>{
 /* ========== LETTER ========== */
 function showLetter(){document.getElementById('letter-modal').style.display='flex'}
 function hideLetter(){document.getElementById('letter-modal').style.display='none'}
+
+/* ========== IMAGE PATH FIXER (GitHub Pages case-sensitivity) ========== */
+/* Tries both .JPG and .jpg for every image. Whichever loads first wins. */
+(function fixImagePaths(){
+  /* Fix background image on first page */
+  const fp=document.getElementById('first-page');
+  function tryBg(url){
+    return new Promise(r=>{const img=new Image();img.onload=()=>r(url);img.onerror=()=>r(null);img.src=url});
+  }
+  Promise.all([tryBg('background.JPG'),tryBg('background.jpg'),tryBg('background.jpeg'),tryBg('background.JPEG')]).then(results=>{
+    const working=results.find(u=>u!==null);
+    if(working) fp.style.backgroundImage=`url('${working}')`;
+  });
+
+  /* Fix photo grid images */
+  document.querySelectorAll('.photo-bg').forEach(el=>{
+    const cur=el.style.backgroundImage;
+    const match=cur.match(/url\(['"]?([^'"]+)['"]?\)/);
+    if(!match)return;
+    const original=match[1];
+    const base=original.replace(/\.(jpe?g|JPE?G)$/,'');
+    const variants=[base+'.JPG',base+'.jpg',base+'.jpeg',base+'.JPEG',base+'.png',base+'.PNG'];
+
+    Promise.all(variants.map(tryBg)).then(results=>{
+      const working=results.find(u=>u!==null);
+      if(working) el.style.backgroundImage=`url('${working}')`;
+    });
+  });
+})();
 </script>
 
 </body>
