@@ -145,7 +145,8 @@ color:rgba(255,255,255,.6);
 border:1px solid rgba(255,255,255,.15);
 backdrop-filter:blur(6px);
 z-index:3;
-transition:all .35s cubic-bezier(.4,0,.2,1);
+transition:background .2s;
+/* NO transition on position/transform — it must JUMP instantly */
 }
 #no.escaped{position:fixed}
 #no:hover{background:rgba(255,255,255,.12)}
@@ -226,17 +227,17 @@ height:100%;width:100%;gap:0;
 
 .photo-cell{position:relative;overflow:hidden}
 .photo-cell .photo-bg{
-width:100%;height:100%;
+position:absolute;
+inset:0;
 background-size:cover;background-position:center;
-display:block;
 transition:transform 8s ease;
-filter:brightness(.7) saturate(1.1);
+filter:brightness(.75) saturate(1.15);
 }
 .photo-cell:hover .photo-bg{transform:scale(1.08)}
 
 #second-page::after{
 content:””;position:absolute;inset:0;
-background:radial-gradient(ellipse at center,rgba(26,10,16,.3) 0%,rgba(26,10,16,.85) 100%);
+background:radial-gradient(ellipse at center,rgba(26,10,16,.15) 0%,rgba(26,10,16,.7) 100%);
 pointer-events:none;z-index:1;
 }
 
@@ -248,9 +249,9 @@ z-index:3;width:90%;max-width:440px;
 max-height:92vh;
 overflow-y:auto;
 text-align:center;
-background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.04));
-backdrop-filter:blur(24px) saturate(1.4);
--webkit-backdrop-filter:blur(24px) saturate(1.4);
+background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.03));
+backdrop-filter:blur(16px) saturate(1.3);
+-webkit-backdrop-filter:blur(16px) saturate(1.3);
 border:1px solid rgba(255,255,255,.12);
 border-radius:32px;
 padding:30px 20px 26px;
@@ -685,10 +686,11 @@ function yesClick(){
   showMilestoneToast();
 }
 
-/* ---- NO BUTTON: runs away, pleads, shrinks, Yes grows ---- */
+/* ---- NO BUTTON: runs away, pleads, Yes grows — NEVER disappears ---- */
 let noCount=0;
 let noEscaped=false;
 let currentBubble=null;
+let noMoving=false; /* prevent double-fire on mobile */
 
 const noTexts=[
   'No 😜',
@@ -700,9 +702,17 @@ const noTexts=[
   'Don\'t do this! 💕',
   'One more chance? 🥹',
   'PLEASE 😩',
-  'Fine, but... 💘',
-  '...just say Yes ❤️',
-  'You can\'t catch me! 😜',
+  'You\'re breaking my heart 💔',
+  'I won\'t give up! 💪',
+  '...just say Yes already ❤️',
+  'Okay I\'ll just wait here 🥺',
+  'Still no?! 😱',
+  'You\'re so stubborn 😜',
+  'But I love you! 💖',
+  'No is not an option! 🚫',
+  'Try again 😏',
+  'Nope, not accepting that! 💕',
+  'The answer is Yes 😍',
 ];
 
 const pleadMessages=[
@@ -718,82 +728,98 @@ const pleadMessages=[
   {emoji:'💖', text:'Your smile already said yes...'},
   {emoji:'👑', text:'Every queen deserves her king!'},
   {emoji:'🌹', text:'This rose won\'t stop until you say yes!'},
+  {emoji:'😍', text:'Just look at those photos and say yes!'},
+  {emoji:'💗', text:'My love for you is bigger than this button!'},
+  {emoji:'🫶', text:'You + Me = Forever. It\'s simple math!'},
+  {emoji:'🥰', text:'You know resistance is futile, right?'},
+  {emoji:'💘', text:'Cupid is on my side!'},
+  {emoji:'😤', text:'I can do this all day!'},
+  {emoji:'🦋', text:'You give me butterflies every single day...'},
+  {emoji:'💝', text:'Okay fine, I\'ll just love you anyway!'},
 ];
 
 function moveNo(e){
-  if(e) e.preventDefault();
+  if(e){e.preventDefault();e.stopPropagation();}
+
+  /* Prevent double-fire (touchstart + mouseover on mobile) */
+  if(noMoving) return;
+  noMoving=true;
+  setTimeout(()=>noMoving=false, 300);
+
   const btn=document.getElementById('no');
   const yesBtn=document.getElementById('yes');
 
-  // First touch: escape from flow to fixed
+  /* First touch: escape from flow to fixed position */
   if(!noEscaped){
     noEscaped=true;
     btn.classList.add('escaped');
   }
 
-  // Change No button text
+  /* Cycle through No button texts */
   noCount++;
-  const idx=Math.min(noCount, noTexts.length-1);
+  const idx=noCount % noTexts.length;
   btn.innerText=noTexts[idx];
 
-  // Shrink No button gradually
-  const shrink=Math.max(0.55, 1 - noCount*0.04);
-  btn.style.transform=`scale(${shrink})`;
-
-  // Grow Yes button gradually
-  const grow=Math.min(1.5, 1 + noCount*0.05);
+  /* Grow Yes button gradually (caps at 1.4x) */
+  const grow=Math.min(1.4, 1 + Math.min(noCount,8)*0.05);
   yesBtn.style.transform=`scale(${grow})`;
-  yesBtn.style.boxShadow=`0 ${8+noCount*2}px ${32+noCount*4}px rgba(232,67,106,${Math.min(.8,.45+noCount*.03)})`;
+  yesBtn.style.boxShadow=`0 ${8+Math.min(noCount,10)*2}px ${32+Math.min(noCount,10)*4}px rgba(232,67,106,${Math.min(.75,.45+Math.min(noCount,10)*.03)})`;
 
-  // Move to random position
-  const pad=20;
-  const maxX=innerWidth-btn.offsetWidth-pad;
-  const maxY=innerHeight-btn.offsetHeight-pad;
-  btn.style.left=Math.max(pad,Math.random()*maxX)+'px';
-  btn.style.top=Math.max(pad,Math.random()*maxY)+'px';
+  /* Move No button to random safe position (always on screen) */
+  const btnW=Math.max(btn.offsetWidth, 120);
+  const btnH=Math.max(btn.offsetHeight, 50);
+  const pad=30;
+  const maxX=Math.max(pad, innerWidth - btnW - pad);
+  const maxY=Math.max(pad, innerHeight - btnH - pad);
+  const newX=pad + Math.random()*(maxX - pad);
+  const newY=pad + Math.random()*(maxY - pad);
+  btn.style.left=newX+'px';
+  btn.style.top=newY+'px';
 
-  // Show pleading speech bubble
-  showPleadBubble(btn);
+  /* Keep button fully visible — NO shrinking, NO fading */
+  btn.style.opacity='1';
+  btn.style.transform='scale(1)';
 
-  // Shake the whole page slightly
+  /* Show pleading speech bubble */
+  showPleadBubble(btn, newX, newY);
+
+  /* Gentle page shake */
   document.body.style.animation='none';
   requestAnimationFrame(()=>{
     document.body.style.animation='pageShake .3s ease';
   });
-
-  // After many attempts, No button starts to become transparent
-  if(noCount>=8){
-    btn.style.opacity=Math.max(0.3, 1-((noCount-7)*0.1));
-  }
 }
 
-function showPleadBubble(nearBtn){
-  // Remove previous bubble
+function showPleadBubble(nearBtn, btnX, btnY){
   if(currentBubble){
     currentBubble.remove();
     currentBubble=null;
   }
 
-  const msg=pleadMessages[Math.min(noCount-1,pleadMessages.length-1)];
+  const msgIdx=(noCount-1) % pleadMessages.length;
+  const msg=pleadMessages[msgIdx];
   const bubble=document.createElement('div');
   bubble.className='plead-bubble';
   bubble.innerHTML=`<span class="plead-emoji">${msg.emoji}</span><span class="plead-text">${msg.text}</span>`;
 
-  // Position near the No button
-  const btnRect=nearBtn.getBoundingClientRect();
-  bubble.style.left=Math.min(innerWidth-290, Math.max(10, btnRect.left + btnRect.width/2 - 140))+'px';
-  bubble.style.top=Math.max(10, btnRect.top - 80)+'px';
+  /* Position above or below the No button depending on screen space */
+  const bubbleWidth=260;
+  let bx=Math.min(innerWidth-bubbleWidth-10, Math.max(10, (btnX||0) - 60));
+  let by=(btnY||0) - 85;
+  if(by<10) by=(btnY||0) + (nearBtn.offsetHeight||50) + 15;
+
+  bubble.style.left=bx+'px';
+  bubble.style.top=by+'px';
 
   document.body.appendChild(bubble);
   currentBubble=bubble;
 
-  // Auto-remove after 2s
   setTimeout(()=>{
     if(bubble===currentBubble){
       bubble.style.animation='bubbleOut .3s ease-in forwards';
       setTimeout(()=>{bubble.remove();if(currentBubble===bubble)currentBubble=null},300);
     }
-  },2000);
+  },2200);
 }
 
 /* ========== CREATIVE COUNTER ========== */
