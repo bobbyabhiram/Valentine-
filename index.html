@@ -109,6 +109,22 @@ html,body{height:100%;width:100%;font-family:'Quicksand',sans-serif;background:#
 .sparkle{position:fixed;z-index:10;pointer-events:none;font-size:16px;animation:sparkPop .8s ease-out forwards}
 .whisper{position:fixed;z-index:4;pointer-events:none;font-family:‘Cormorant Garamond’,serif;font-style:italic;font-size:clamp(13px,2.5vw,16px);color:#4dc9f6;opacity:.5;animation:whisperFloat 7s linear forwards;text-shadow:0 0 12px rgba(0,180,255,.4)}
 
+/* ============ LOVE CALCULATOR ============ */
+.calc-wrap{text-align:center;animation:fadeUp .8s ease both}
+.calc-title{font-family:‘Playfair Display’,serif;font-size:clamp(18px,4vw,26px);font-weight:700;color:#fff;margin-bottom:6px}
+.calc-sub{font-size:clamp(13px,2.8vw,16px);color:rgba(255,255,255,.5);margin-bottom:28px}
+.calc-ring-box{position:relative;width:200px;height:200px;margin:0 auto 24px}
+.calc-ring-svg{width:200px;height:200px;transform:rotate(-90deg)}
+.calc-ring-bg{fill:none;stroke:rgba(77,201,246,.12);stroke-width:12}
+.calc-ring-fill{fill:none;stroke:url(#calcGrad);stroke-width:12;stroke-linecap:round;stroke-dasharray:565.48;stroke-dashoffset:565.48;transition:stroke-dashoffset .1s linear}
+.calc-pct{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-family:‘Playfair Display’,serif;font-size:48px;font-weight:700;color:#fff}
+.calc-pct span{font-size:28px;color:#4dc9f6}
+.calc-names{display:flex;justify-content:center;align-items:center;gap:16px;margin-bottom:20px}
+.calc-name{font-family:‘Playfair Display’,serif;font-size:clamp(16px,3.5vw,22px);font-weight:700;color:#4dc9f6}
+.calc-heart{font-size:28px;animation:heartbeat 1.2s ease-in-out infinite}
+.calc-msg{font-family:‘Cormorant Garamond’,serif;font-style:italic;font-size:clamp(15px,3.2vw,20px);color:rgba(255,255,255,.7);line-height:1.6;min-height:28px;margin-bottom:24px}
+.calc-msg.final{color:#FFD700;font-weight:600;font-size:clamp(17px,3.5vw,22px);font-style:normal}
+
 /* ============ KEYFRAMES ============ */
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes gentleFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-20px) rotate(8deg)}}
@@ -245,12 +261,92 @@ function nextQ(){curQ++;quizAnswered=false;if(curQ>=questions.length){showQuizRe
 
 function pickA(idx){if(quizAnswered)return;quizAnswered=true;var q=questions[curQ],ok=idx===q.correct;if(ok)quizScore++;for(var j=0;j<q.opts.length;j++){var b=document.getElementById('opt'+j);if(!b)continue;b.style.cursor='default';if(j===q.correct)b.className='opt-btn correct';else if(j===idx&&!ok)b.className='opt-btn wrong';else b.className='opt-btn dimmed'}document.getElementById('feedback').innerHTML='<div class="feedback-box"><p class="fb-label">'+(ok?'🎉 You got it!':'😘 Almost!')+'</p><p class="fb-text">'+q.response+'</p><button class="quiz-btn" onclick="nextQ()">'+(curQ<questions.length-1?'Next Question →':'See Your Results... ✨')+'</button></div>'}
 
-function showQuizResult(){var root=document.getElementById('quiz-root');root.innerHTML='<div style="text-align:center;animation:fadeUp 1s ease both"><div id="scoreBox"><p style="font-size:14px;color:#4dc9f6;font-weight:700;letter-spacing:2px;margin-bottom:8px">YOUR SCORE</p><div class="score-num">'+quizScore+'/'+questions.length+'</div><p style="font-size:16px;color:rgba(255,255,255,.6);margin-bottom:40px">'+(quizScore===questions.length?'Perfect score! You know our story by heart! 💙':'You know us so well! 💙')+'</p></div><div id="revealArea"></div></div>';setTimeout(function(){var ra=document.getElementById('revealArea');if(!ra)return;ra.innerHTML='<p class="reveal-text">But here\'s the real reason I made this...</p>'},1500);setTimeout(function(){var ra=document.getElementById('revealArea');if(!ra)return;ra.innerHTML+='<p class="reveal-text">From that September morning to this Valentine\'s Day...</p>'},3500);setTimeout(function(){var ra=document.getElementById('revealArea');if(!ra)return;ra.innerHTML+='<p class="reveal-text">Every moment with you has been the best moment of my life.</p>'},5500);setTimeout(function(){var sb=document.getElementById('scoreBox');if(sb)sb.style.display='none';var ra=document.getElementById('revealArea');if(!ra)return;ra.innerHTML='<div class="final-proposal"><span class="ring">💍</span><h1>Lipi,<br>Will You Be My Valentine<br>Forever?</h1><p class="poem">You are my September surprise,<br>my October warmth,<br>my November forever,<br>and my every day after.</p><p class="vday">Happy Valentine\'s Day, My Love! 💙</p><button class="continue-btn" onclick="goToCelebration()">See Our Love Story ✨</button><p style="margin-top:28px;font-size:13px;color:rgba(255,255,255,.25);font-style:italic">Forever yours — Abhi 💙</p></div>';spawnConfetti()},8000)}
+function showQuizResult(){var root=document.getElementById('quiz-root');root.innerHTML='<div style="text-align:center;animation:fadeUp 1s ease both"><div id="scoreBox"><p style="font-size:14px;color:#4dc9f6;font-weight:700;letter-spacing:2px;margin-bottom:8px">YOUR SCORE</p><div class="score-num">'+quizScore+'/'+questions.length+'</div><p style="font-size:16px;color:rgba(255,255,255,.6);margin-bottom:40px">'+(quizScore===questions.length?'Perfect score! You know our story by heart! 💙':'You know us so well! 💙')+'</p></div><div id="revealArea"></div></div>';
+
+/* After 2s show "but wait" then launch calculator */
+setTimeout(function(){var ra=document.getElementById('revealArea');if(!ra)return;ra.innerHTML='<p class="reveal-text">But wait... let\'s check one more thing 😏</p>'},2000);
+
+setTimeout(function(){var sb=document.getElementById('scoreBox');if(sb)sb.style.display='none';var ra=document.getElementById('revealArea');if(!ra)return;
+ra.innerHTML='<div class="calc-wrap">'+
+'<p class="calc-title">💕 Love Compatibility Calculator 💕</p>'+
+'<p class="calc-sub">Calculating the love between...</p>'+
+'<div class="calc-names"><span class="calc-name">Abhi</span><span class="calc-heart">❤️</span><span class="calc-name">Lipi</span></div>'+
+'<div class="calc-ring-box">'+
+  '<svg class="calc-ring-svg" viewBox="0 0 200 200">'+
+    '<defs><linearGradient id="calcGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#4dc9f6"/><stop offset="50%" stop-color="#90EE90"/><stop offset="100%" stop-color="#FFD700"/></linearGradient></defs>'+
+    '<circle class="calc-ring-bg" cx="100" cy="100" r="90"/>'+
+    '<circle class="calc-ring-fill" id="calcRing" cx="100" cy="100" r="90"/>'+
+  '</svg>'+
+  '<div class="calc-pct"><span id="calcNum">0</span><span>%</span></div>'+
+'</div>'+
+'<p class="calc-msg" id="calcMsg">Analyzing your love wavelengths...</p>'+
+'<div id="calcNext"></div>'+
+'</div>';
+startLoveCalc()},4000)}
+
+function startLoveCalc(){
+var pct=0,numEl=document.getElementById('calcNum'),ringEl=document.getElementById('calcRing'),msgEl=document.getElementById('calcMsg');
+if(!numEl||!ringEl)return;
+var totalDash=565.48;
+var msgs=[
+{at:10,t:'Scanning heartbeats... 💓'},{at:25,t:'Chemistry levels: OFF THE CHARTS 🔬'},{at:40,t:'Matching zodiac energy... ✨'},
+{at:55,t:'Soulmate frequency detected! 🌟'},{at:70,t:'Love wavelength synchronizing... 📡'},{at:82,t:'This is getting intense... 🔥'},
+{at:92,t:'Almost there... 💫'},{at:100,t:''}
+];
+var msgIdx=0;
+
+/* Slow start, pause in middle, fast finish */
+var speeds=[
+{from:0,to:30,delay:60},{from:30,to:45,delay:100},{from:45,to:55,delay:200},
+{from:55,to:60,delay:400},{from:60,to:75,delay:80},{from:75,to:90,delay:50},{from:90,to:99,delay:120},{from:99,to:100,delay:600}
+];
+
+function animateRange(rangeIdx){
+if(rangeIdx>=speeds.length)return;
+var s=speeds[rangeIdx];
+var cur=s.from;
+var iv=setInterval(function(){
+cur++;pct=cur;
+numEl.textContent=pct;
+ringEl.style.strokeDashoffset=totalDash-(totalDash*(pct/100));
+/* Check messages */
+while(msgIdx<msgs.length&&pct>=msgs[msgIdx].at){
+if(msgs[msgIdx].t)msgEl.textContent=msgs[msgIdx].t;
+msgIdx++}
+if(cur>=s.to){clearInterval(iv);
+if(s.to<100){animateRange(rangeIdx+1)}
+else{onCalcDone()}}
+},s.delay);
+}
+animateRange(0);
+}
+
+function onCalcDone(){
+var msgEl=document.getElementById('calcMsg');
+var nextEl=document.getElementById('calcNext');
+if(msgEl){msgEl.className='calc-msg final';msgEl.innerHTML='💛 100% SOULMATES — It was always meant to be! 💛'}
+/* Start music here — loops forever */
+try{var m=document.getElementById('bg-music');m.currentTime=0;m.play()}catch(e){}
+/* Small heart burst */
+burstHearts(20);
+setTimeout(function(){
+if(nextEl)nextEl.innerHTML='<button class="quiz-btn" onclick="showFinalProposal()" style="font-size:17px;padding:15px 40px;animation:pulse 2s ease-in-out infinite">Continue... 💙</button>';
+},1500);
+}
+
+function showFinalProposal(){var root=document.getElementById('quiz-root');
+root.innerHTML='<div style="text-align:center;animation:fadeUp 1s ease both"><div id="revealArea2"></div></div>';
+var ra=document.getElementById('revealArea2');
+setTimeout(function(){if(!ra)return;ra.innerHTML='<p class="reveal-text">Now you know our love is literally 100% perfect...</p>'},500);
+setTimeout(function(){if(!ra)return;ra.innerHTML+='<p class="reveal-text">From that September morning to this Valentine\'s Day...</p>'},2500);
+setTimeout(function(){if(!ra)return;ra.innerHTML+='<p class="reveal-text">Every moment with you has been the best moment of my life.</p>'},4500);
+setTimeout(function(){if(!ra)return;
+ra.innerHTML='<div class="final-proposal"><span class="ring">💍</span><h1>Lipi,<br>Will You Be My Valentine<br>Forever?</h1><p class="poem">You are my September surprise,<br>my October warmth,<br>my November forever,<br>and my every day after.</p><p class="vday">Happy Valentine\'s Day, My Love! 💙</p><button class="continue-btn" onclick="goToCelebration()">See Our Love Story ✨</button><p style="margin-top:28px;font-size:13px;color:rgba(255,255,255,.25);font-style:italic">Forever yours — Abhi 💙</p></div>';spawnConfetti()},7000)}
 
 function spawnConfetti(){var d=document.createElement('div');d.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:100;overflow:hidden';d.id='confetti-wrap';document.body.appendChild(d);var cols=['#4dc9f6','#90EE90','#FFD700','#FF69B4','#E0F7FA','#C8E6C9','#FFF9C4','#F8BBD0'];for(var i=0;i<100;i++){var p=document.createElement('div');p.className='confetti-piece';p.style.cssText='left:'+(Math.random()*100)+'%;width:'+(5+Math.random()*8)+'px;height:'+(8+Math.random()*12)+'px;background:'+cols[i%cols.length]+';transform:rotate('+(Math.random()*360)+'deg);animation-duration:'+(2+Math.random()*3)+'s;animation-delay:'+(Math.random()*2)+'s';d.appendChild(p)}}
 
 /* ===== QUIZ → CELEBRATION ===== */
-function goToCelebration(){document.getElementById('quiz-page').style.display='none';var cw=document.getElementById('confetti-wrap');if(cw)cw.remove();document.getElementById('second-page').style.display='block';document.body.style.overflow='hidden';try{document.getElementById('bg-music').play()}catch(e){}burstHearts(50);startPetals();showMilestoneToast()}
+function goToCelebration(){document.getElementById('quiz-page').style.display='none';var cw=document.getElementById('confetti-wrap');if(cw)cw.remove();document.getElementById('second-page').style.display='block';document.body.style.overflow='hidden';burstHearts(50);startPetals();showMilestoneToast()}
 
 /* ===== COUNTER ===== */
 var meetDate=new Date('2025-09-28T10:00:00'),prevVals={};
