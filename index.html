@@ -27,9 +27,11 @@ html,body{height:100%;width:100%;font-family:'Quicksand',sans-serif;background:#
 .float-heart{position:absolute;z-index:1;font-size:clamp(18px,4vw,30px);color:#4dc9f6;opacity:.35;text-shadow:0 0 10px rgba(0,180,255,.5);animation:gentleFloat 6s ease-in-out infinite}
 
 /* ============ QUIZ SECTION ============ */
-#quiz-page{display:none;min-height:100vh;width:100%;position:relative;z-index:1;padding:24px 16px}
-#quiz-page .quiz-wrap{max-width:540px;margin:0 auto;display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 48px)}
-.quiz-card{width:100%;background-color:rgba(15,30,55,.95);border:1px solid rgba(77,201,246,.15);border-radius:24px;padding:28px 22px;box-shadow:0 8px 40px rgba(0,0,0,.3);animation:fadeUp .6s ease both}
+#quiz-page{display:none;min-height:100vh;width:100%;position:relative;z-index:1;padding:0}
+#quiz-page .quiz-wrap{max-width:100%;margin:0;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px 16px}
+.quiz-bg{position:fixed;inset:0;z-index:0;background-color:#0a1628;background-size:cover;background-position:center;transition:opacity .6s ease}
+.quiz-bg::after{content:””;position:absolute;inset:0;background:rgba(0,0,0,.75)}
+.quiz-card{width:100%;max-width:540px;position:relative;z-index:1;background-color:rgba(10,22,40,.85);border:1px solid rgba(77,201,246,.15);border-radius:24px;padding:28px 22px;box-shadow:0 8px 40px rgba(0,0,0,.3);animation:fadeUp .6s ease both}
 .progress-bar{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:28px}
 .prog-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;transition:all .3s ease}
 .prog-dot.done{background-color:#4dc9f6;color:#0a1628}
@@ -181,7 +183,7 @@ html,body{height:100%;width:100%;font-family:'Quicksand',sans-serif;background:#
 
 <!-- QUIZ SECTION -->
 
-<div id="quiz-page"><div class="quiz-wrap"><div id="quiz-root" style="width:100%"></div></div></div>
+<div id="quiz-page"><div class="quiz-bg" id="quiz-bg"></div><div class="quiz-wrap"><div id="quiz-root" style="width:100%;max-width:540px"></div></div></div>
 
 <!-- PAGE 2 — CELEBRATION -->
 
@@ -275,10 +277,20 @@ var questions=[
   {q:"How many days between our first meeting and engagement? 🗓️",emoji:"⚡",sub:"Love doesn't follow timelines...",opts:["30 days","41 days","55 days","60 days"],correct:1,response:"41 days! ⚡ From strangers to soulmates in just 41 days. Some things are just meant to be."}
 ];
 var curQ=-1,quizScore=0,quizAnswered=false;
+var quizPhotos=['photo2.JPG','photo4.JPG','photo1.JPG','photo6.JPG','photo3.JPG'];
 
-function showQuizWelcome(){curQ=-1;quizScore=0;document.getElementById('quiz-root').innerHTML='<div style="text-align:center;animation:fadeUp .8s ease both"><div style="font-size:60px;margin-bottom:16px">💌</div><h1 style="font-family:Playfair Display,serif;font-size:clamp(26px,6vw,44px);font-weight:700;background-color:#4dc9f6;background-image:linear-gradient(135deg,#4dc9f6,#90EE90,#4dc9f6);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 3s linear infinite;margin-bottom:16px;line-height:1.3">Hey Lipi! 💙</h1><p style="font-size:clamp(16px,3vw,20px);color:rgba(255,255,255,.85);line-height:1.7;margin-bottom:8px">I made a little quiz about US...</p><p style="font-size:clamp(14px,2.5vw,17px);color:rgba(255,255,255,.5);line-height:1.6;margin-bottom:36px">5 questions about our love story.<br>Answer them all and find a surprise at the end! 🎁</p><button class="quiz-btn" onclick="nextQ()" style="font-size:18px;padding:16px 48px">Start The Quiz ✨</button><p style="margin-top:44px;font-size:13px;color:rgba(255,255,255,.25);font-style:italic">Made with all my love — Abhi 💙</p></div>'}
+/* Preload quiz photos */
+quizPhotos.forEach(function(p){tryLoad(p).then(function(u){if(u){var idx=quizPhotos.indexOf(p);quizPhotos[idx]=u}})});
 
-function nextQ(){curQ++;quizAnswered=false;if(curQ>=questions.length){showQuizResult();return}var q=questions[curQ],root=document.getElementById('quiz-root');var h='<div class="quiz-card"><div class="progress-bar">';for(var i=0;i<questions.length;i++){var cls=i<curQ?'done':i===curQ?'active':'future';h+='<div class="prog-dot '+cls+'">'+(i<curQ?'✓':(i+1))+'</div>';if(i<questions.length-1)h+='<div class="prog-line '+(i<curQ?'done':'future')+'"></div>'}h+='</div><div class="q-emoji">'+q.emoji+'</div><p class="q-label">QUESTION '+(curQ+1)+' OF '+questions.length+'</p><p class="q-sub">'+q.sub+'</p><h2 class="q-text">'+q.q+'</h2><div id="opts">';for(var j=0;j<q.opts.length;j++){h+='<button class="opt-btn" id="opt'+j+'" onclick="pickA('+j+')"><span class="opt-letter">'+String.fromCharCode(65+j)+'.</span>'+q.opts[j]+'</button>'}h+='</div><div id="feedback"></div></div>';root.innerHTML=h;window.scrollTo({top:0,behavior:'smooth'})}
+function setQuizBg(idx){
+var bg=document.getElementById('quiz-bg');if(!bg)return;
+if(idx>=0&&idx<quizPhotos.length){bg.style.backgroundImage='url('+quizPhotos[idx]+')'}
+else{bg.style.backgroundImage='none'}
+}
+
+function showQuizWelcome(){curQ=-1;quizScore=0;setQuizBg(-1);document.getElementById('quiz-root').innerHTML='<div style="text-align:center;animation:fadeUp .8s ease both"><div style="font-size:60px;margin-bottom:16px">💌</div><h1 style="font-family:Playfair Display,serif;font-size:clamp(26px,6vw,44px);font-weight:700;background-color:#4dc9f6;background-image:linear-gradient(135deg,#4dc9f6,#90EE90,#4dc9f6);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 3s linear infinite;margin-bottom:16px;line-height:1.3">Hey Lipi! 💙</h1><p style="font-size:clamp(16px,3vw,20px);color:rgba(255,255,255,.85);line-height:1.7;margin-bottom:8px">I made a little quiz about US...</p><p style="font-size:clamp(14px,2.5vw,17px);color:rgba(255,255,255,.5);line-height:1.6;margin-bottom:36px">5 questions about our love story.<br>Answer them all and find a surprise at the end! 🎁</p><button class="quiz-btn" onclick="nextQ()" style="font-size:18px;padding:16px 48px">Start The Quiz ✨</button><p style="margin-top:44px;font-size:13px;color:rgba(255,255,255,.25);font-style:italic">Made with all my love — Abhi 💙</p></div>'}
+
+function nextQ(){curQ++;quizAnswered=false;if(curQ>=questions.length){setQuizBg(-1);showQuizResult();return}setQuizBg(curQ);var q=questions[curQ],root=document.getElementById('quiz-root');var h='<div class="quiz-card"><div class="progress-bar">';for(var i=0;i<questions.length;i++){var cls=i<curQ?'done':i===curQ?'active':'future';h+='<div class="prog-dot '+cls+'">'+(i<curQ?'✓':(i+1))+'</div>';if(i<questions.length-1)h+='<div class="prog-line '+(i<curQ?'done':'future')+'"></div>'}h+='</div><div class="q-emoji">'+q.emoji+'</div><p class="q-label">QUESTION '+(curQ+1)+' OF '+questions.length+'</p><p class="q-sub">'+q.sub+'</p><h2 class="q-text">'+q.q+'</h2><div id="opts">';for(var j=0;j<q.opts.length;j++){h+='<button class="opt-btn" id="opt'+j+'" onclick="pickA('+j+')"><span class="opt-letter">'+String.fromCharCode(65+j)+'.</span>'+q.opts[j]+'</button>'}h+='</div><div id="feedback"></div></div>';root.innerHTML=h;window.scrollTo({top:0,behavior:'smooth'})}
 
 function pickA(idx){if(quizAnswered)return;quizAnswered=true;var q=questions[curQ],ok=idx===q.correct;if(ok)quizScore++;for(var j=0;j<q.opts.length;j++){var b=document.getElementById('opt'+j);if(!b)continue;b.style.cursor='default';if(j===q.correct)b.className='opt-btn correct';else if(j===idx&&!ok)b.className='opt-btn wrong';else b.className='opt-btn dimmed'}document.getElementById('feedback').innerHTML='<div class="feedback-box"><p class="fb-label">'+(ok?'🎉 You got it!':'😘 Almost!')+'</p><p class="fb-text">'+q.response+'</p><button class="quiz-btn" onclick="nextQ()">'+(curQ<questions.length-1?'Next Question →':'See Your Results... ✨')+'</button></div>'}
 
