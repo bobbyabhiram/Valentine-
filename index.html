@@ -227,7 +227,28 @@ html,body{height:100%;width:100%;font-family:'Quicksand',sans-serif;background:#
 </div>
 
 <script>
-/* ===== IMAGE LOADER ===== */
+/* ===== AUDIO — unlock early, play at calculator 100% ===== */
+var bgMusic=document.getElementById('bg-music');
+var musicUnlocked=false,musicPlaying=false;
+
+/* Unlock audio on ANY user tap (silent play+pause) */
+function unlockAudio(){
+if(musicUnlocked)return;
+bgMusic.volume=0;
+bgMusic.play().then(function(){bgMusic.pause();bgMusic.currentTime=0;bgMusic.volume=1;musicUnlocked=true}).catch(function(){})
+}
+document.addEventListener('click',unlockAudio);
+document.addEventListener('touchstart',unlockAudio);
+
+function startMusic(){
+if(musicPlaying)return;musicPlaying=true;
+bgMusic.currentTime=0;bgMusic.volume=1;
+var p=bgMusic.play();
+if(p)p.catch(function(){
+/* If still blocked, retry on next tap */
+function retryPlay(){bgMusic.play().then(function(){document.removeEventListener('click',retryPlay);document.removeEventListener('touchstart',retryPlay)}).catch(function(){})}
+document.addEventListener('click',retryPlay);document.addEventListener('touchstart',retryPlay)})
+}
 function tryLoad(n){var e=['.jpg','.JPG','.jpeg','.JPEG','.png','.PNG'],b=n.replace(/\.[^.]+$/,'');return new Promise(function(r){var t=0;e.forEach(function(x){var i=new Image();i.onload=function(){r(b+x)};i.onerror=function(){t++;if(t>=e.length)r(null)};i.src=b+x})})}
 tryLoad('background.jpg').then(function(u){if(u)document.getElementById('fp-bg').style.backgroundImage='url('+u+')'});
 document.querySelectorAll('.photo-bg').forEach(function(el){var s=el.getAttribute('data-src');if(s)tryLoad(s).then(function(u){if(u)el.style.backgroundImage='url('+u+')'})});
@@ -326,11 +347,11 @@ var msgEl=document.getElementById('calcMsg');
 var nextEl=document.getElementById('calcNext');
 if(msgEl){msgEl.className='calc-msg final';msgEl.innerHTML='💛 100% SOULMATES — It was always meant to be! 💛'}
 /* Start music here — loops forever */
-try{var m=document.getElementById('bg-music');m.currentTime=0;m.play()}catch(e){}
+startMusic();
 /* Small heart burst */
 burstHearts(20);
 setTimeout(function(){
-if(nextEl)nextEl.innerHTML='<button class="quiz-btn" onclick="showFinalProposal()" style="font-size:17px;padding:15px 40px;animation:pulse 2s ease-in-out infinite">Continue... 💙</button>';
+if(nextEl)nextEl.innerHTML='<button class="quiz-btn" onclick="startMusic();showFinalProposal()" style="font-size:17px;padding:15px 40px;animation:pulse 2s ease-in-out infinite">Continue... 💙</button>';
 },1500);
 }
 
@@ -341,7 +362,7 @@ setTimeout(function(){if(!ra)return;ra.innerHTML='<p class="reveal-text">Now you
 setTimeout(function(){if(!ra)return;ra.innerHTML+='<p class="reveal-text">From that September morning to this Valentine\'s Day...</p>'},2500);
 setTimeout(function(){if(!ra)return;ra.innerHTML+='<p class="reveal-text">Every moment with you has been the best moment of my life.</p>'},4500);
 setTimeout(function(){if(!ra)return;
-ra.innerHTML='<div class="final-proposal"><span class="ring">💍</span><h1>Lipi,<br>Will You Be My Valentine<br>Forever?</h1><p class="poem">You are my September surprise,<br>my October warmth,<br>my November forever,<br>and my every day after.</p><p class="vday">Happy Valentine\'s Day, My Love! 💙</p><button class="continue-btn" onclick="goToCelebration()">See Our Love Story ✨</button><p style="margin-top:28px;font-size:13px;color:rgba(255,255,255,.25);font-style:italic">Forever yours — Abhi 💙</p></div>';spawnConfetti()},7000)}
+ra.innerHTML='<div class="final-proposal"><span class="ring">💍</span><h1>Lipi,<br>Will You Be My Valentine<br>Forever?</h1><p class="poem">You are my September surprise,<br>my October warmth,<br>my November forever,<br>and my every day after.</p><p class="vday">Happy Valentine\'s Day, My Love! 💙</p><button class="continue-btn" onclick="startMusic();goToCelebration()">See Our Love Story ✨</button><p style="margin-top:28px;font-size:13px;color:rgba(255,255,255,.25);font-style:italic">Forever yours — Abhi 💙</p></div>';spawnConfetti()},7000)}
 
 function spawnConfetti(){var d=document.createElement('div');d.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:100;overflow:hidden';d.id='confetti-wrap';document.body.appendChild(d);var cols=['#4dc9f6','#90EE90','#FFD700','#FF69B4','#E0F7FA','#C8E6C9','#FFF9C4','#F8BBD0'];for(var i=0;i<100;i++){var p=document.createElement('div');p.className='confetti-piece';p.style.cssText='left:'+(Math.random()*100)+'%;width:'+(5+Math.random()*8)+'px;height:'+(8+Math.random()*12)+'px;background:'+cols[i%cols.length]+';transform:rotate('+(Math.random()*360)+'deg);animation-duration:'+(2+Math.random()*3)+'s;animation-delay:'+(Math.random()*2)+'s';d.appendChild(p)}}
 
