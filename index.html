@@ -259,7 +259,7 @@ document.querySelectorAll('.photo-bg').forEach(function(el){var s=el.getAttribut
 (function(){var c=document.getElementById('bgCanvas'),ctx=c.getContext('2d'),hs=[];function rs(){c.width=innerWidth;c.height=innerHeight}rs();addEventListener('resize',rs);for(var i=0;i<25;i++)hs.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,sz:8+Math.random()*14,sp:.3+Math.random()*.7,op:.12+Math.random()*.2});function dh(x,y,s){ctx.beginPath();var t=s*.3;ctx.moveTo(x,y+t);ctx.bezierCurveTo(x,y,x-s/2,y,x-s/2,y+t);ctx.bezierCurveTo(x-s/2,y+(s+t)/2,x,y+(s+t)/1.2,x,y+s);ctx.bezierCurveTo(x,y+(s+t)/1.2,x+s/2,y+(s+t)/2,x+s/2,y+t);ctx.bezierCurveTo(x+s/2,y,x,y,x,y+t);ctx.closePath();ctx.fill()}function an(){ctx.clearRect(0,0,c.width,c.height);var g=ctx.createLinearGradient(0,0,c.width,c.height);g.addColorStop(0,'#0a1628');g.addColorStop(.5,'#0d1f3c');g.addColorStop(1,'#0a1628');ctx.fillStyle=g;ctx.fillRect(0,0,c.width,c.height);for(var i=0;i<hs.length;i++){var h=hs[i];h.y-=h.sp;if(h.y<-30){h.y=c.height+30;h.x=Math.random()*c.width}ctx.fillStyle='rgba(77,201,246,'+h.op+')';dh(h.x,h.y,h.sz)}requestAnimationFrame(an)}an()})();
 
 /* ===== PAGE 1 → QUIZ ===== */
-function yesClick(){document.getElementById('first-page').style.display='none';document.getElementById('quiz-page').style.display='block';document.body.style.overflow='auto';showQuizWelcome()}
+function yesClick(){window._trackPage('Quiz - Welcome');document.getElementById('first-page').style.display='none';document.getElementById('quiz-page').style.display='block';document.body.style.overflow='auto';showQuizWelcome()}
 
 /* ===== NO BUTTON ===== */
 var noCount=0,noEscaped=false,currentBubble=null,noMoving=false;
@@ -290,16 +290,17 @@ else{bg.style.backgroundImage='none'}
 
 function showQuizWelcome(){curQ=-1;quizScore=0;setQuizBg(-1);document.getElementById('quiz-root').innerHTML='<div style="text-align:center;animation:fadeUp .8s ease both"><div style="font-size:60px;margin-bottom:16px">💌</div><h1 style="font-family:Playfair Display,serif;font-size:clamp(26px,6vw,44px);font-weight:700;background-color:#4dc9f6;background-image:linear-gradient(135deg,#4dc9f6,#90EE90,#4dc9f6);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 3s linear infinite;margin-bottom:16px;line-height:1.3">Hey Lipi! 💙</h1><p style="font-size:clamp(16px,3vw,20px);color:rgba(255,255,255,.85);line-height:1.7;margin-bottom:8px">I made a little quiz about US...</p><p style="font-size:clamp(14px,2.5vw,17px);color:rgba(255,255,255,.5);line-height:1.6;margin-bottom:36px">5 questions about our love story.<br>Answer them all and find a surprise at the end! 🎁</p><button class="quiz-btn" onclick="nextQ()" style="font-size:18px;padding:16px 48px">Start The Quiz ✨</button><p style="margin-top:44px;font-size:13px;color:rgba(255,255,255,.25);font-style:italic">Made with all my love — Abhi 💙</p></div>'}
 
-function nextQ(){curQ++;quizAnswered=false;if(curQ>=questions.length){setQuizBg(-1);showQuizResult();return}setQuizBg(curQ);var q=questions[curQ],root=document.getElementById('quiz-root');var h='<div class="quiz-card"><div class="progress-bar">';for(var i=0;i<questions.length;i++){var cls=i<curQ?'done':i===curQ?'active':'future';h+='<div class="prog-dot '+cls+'">'+(i<curQ?'✓':(i+1))+'</div>';if(i<questions.length-1)h+='<div class="prog-line '+(i<curQ?'done':'future')+'"></div>'}h+='</div><div class="q-emoji">'+q.emoji+'</div><p class="q-label">QUESTION '+(curQ+1)+' OF '+questions.length+'</p><p class="q-sub">'+q.sub+'</p><h2 class="q-text">'+q.q+'</h2><div id="opts">';for(var j=0;j<q.opts.length;j++){h+='<button class="opt-btn" id="opt'+j+'" onclick="pickA('+j+')"><span class="opt-letter">'+String.fromCharCode(65+j)+'.</span>'+q.opts[j]+'</button>'}h+='</div><div id="feedback"></div></div>';root.innerHTML=h;window.scrollTo({top:0,behavior:'smooth'})}
+function nextQ(){curQ++;quizAnswered=false;if(curQ>=questions.length){setQuizBg(-1);showQuizResult();return}window._trackPage('Quiz - Question '+(curQ+1)+' of '+questions.length);setQuizBg(curQ);var q=questions[curQ],root=document.getElementById('quiz-root');var h='<div class="quiz-card"><div class="progress-bar">';for(var i=0;i<questions.length;i++){var cls=i<curQ?'done':i===curQ?'active':'future';h+='<div class="prog-dot '+cls+'">'+(i<curQ?'✓':(i+1))+'</div>';if(i<questions.length-1)h+='<div class="prog-line '+(i<curQ?'done':'future')+'"></div>'}h+='</div><div class="q-emoji">'+q.emoji+'</div><p class="q-label">QUESTION '+(curQ+1)+' OF '+questions.length+'</p><p class="q-sub">'+q.sub+'</p><h2 class="q-text">'+q.q+'</h2><div id="opts">';for(var j=0;j<q.opts.length;j++){h+='<button class="opt-btn" id="opt'+j+'" onclick="pickA('+j+')"><span class="opt-letter">'+String.fromCharCode(65+j)+'.</span>'+q.opts[j]+'</button>'}h+='</div><div id="feedback"></div></div>';root.innerHTML=h;window.scrollTo({top:0,behavior:'smooth'})}
 
 function pickA(idx){if(quizAnswered)return;quizAnswered=true;var q=questions[curQ],ok=idx===q.correct;if(ok)quizScore++;for(var j=0;j<q.opts.length;j++){var b=document.getElementById('opt'+j);if(!b)continue;b.style.cursor='default';if(j===q.correct)b.className='opt-btn correct';else if(j===idx&&!ok)b.className='opt-btn wrong';else b.className='opt-btn dimmed'}document.getElementById('feedback').innerHTML='<div class="feedback-box"><p class="fb-label">'+(ok?'🎉 You got it!':'😘 Almost!')+'</p><p class="fb-text">'+q.response+'</p><button class="quiz-btn" onclick="nextQ()">'+(curQ<questions.length-1?'Next Question →':'See Your Results... ✨')+'</button></div>'}
 
-function showQuizResult(){var root=document.getElementById('quiz-root');root.innerHTML='<div style="text-align:center;animation:fadeUp 1s ease both"><div id="scoreBox"><p style="font-size:14px;color:#4dc9f6;font-weight:700;letter-spacing:2px;margin-bottom:8px">YOUR SCORE</p><div class="score-num">'+quizScore+'/'+questions.length+'</div><p style="font-size:16px;color:rgba(255,255,255,.6);margin-bottom:40px">'+(quizScore===questions.length?'Perfect score! You know our story by heart! 💙':'You know us so well! 💙')+'</p></div><div id="revealArea"></div></div>';
+function showQuizResult(){window._trackPage('Quiz - Score ('+quizScore+'/'+questions.length+')');var root=document.getElementById('quiz-root');root.innerHTML='<div style="text-align:center;animation:fadeUp 1s ease both"><div id="scoreBox"><p style="font-size:14px;color:#4dc9f6;font-weight:700;letter-spacing:2px;margin-bottom:8px">YOUR SCORE</p><div class="score-num">'+quizScore+'/'+questions.length+'</div><p style="font-size:16px;color:rgba(255,255,255,.6);margin-bottom:40px">'+(quizScore===questions.length?'Perfect score! You know our story by heart! 💙':'You know us so well! 💙')+'</p></div><div id="revealArea"></div></div>';
 
 /* After 2s show "but wait" then launch calculator */
 setTimeout(function(){var ra=document.getElementById('revealArea');if(!ra)return;ra.innerHTML='<p class="reveal-text">But wait... let\'s check one more thing 😏</p>'},2000);
 
 setTimeout(function(){var sb=document.getElementById('scoreBox');if(sb)sb.style.display='none';var ra=document.getElementById('revealArea');if(!ra)return;
+window._trackPage('Love Calculator - Running');
 ra.innerHTML='<div class="calc-wrap">'+
 '<p class="calc-title">💕 Love Compatibility Calculator 💕</p>'+
 '<p class="calc-sub">Calculating the love between...</p>'+
@@ -355,6 +356,7 @@ animateRange(0);
 }
 
 function onCalcDone(){
+window._trackPage('Love Calculator - 100% SOULMATES');
 var msgEl=document.getElementById('calcMsg');
 var nextEl=document.getElementById('calcNext');
 if(msgEl){msgEl.className='calc-msg final';msgEl.innerHTML='💛 100% SOULMATES — It was always meant to be! 💛'}
@@ -367,7 +369,7 @@ if(nextEl)nextEl.innerHTML='<button class="quiz-btn" onclick="startMusic();showF
 },1500);
 }
 
-function showFinalProposal(){var root=document.getElementById('quiz-root');
+function showFinalProposal(){window._trackPage('Final Proposal - Will You Be My Valentine Forever');var root=document.getElementById('quiz-root');
 root.innerHTML='<div style="text-align:center;animation:fadeUp 1s ease both"><div id="revealArea2"></div></div>';
 var ra=document.getElementById('revealArea2');
 setTimeout(function(){if(!ra)return;ra.innerHTML='<p class="reveal-text">Now you know our love is literally 100% perfect...</p>'},500);
@@ -379,7 +381,7 @@ ra.innerHTML='<div class="final-proposal"><span class="ring">💍</span><h1>Lipi
 function spawnConfetti(){var d=document.createElement('div');d.style.cssText='position:fixed;inset:0;pointer-events:none;z-index:100;overflow:hidden';d.id='confetti-wrap';document.body.appendChild(d);var cols=['#4dc9f6','#90EE90','#FFD700','#FF69B4','#E0F7FA','#C8E6C9','#FFF9C4','#F8BBD0'];for(var i=0;i<100;i++){var p=document.createElement('div');p.className='confetti-piece';p.style.cssText='left:'+(Math.random()*100)+'%;width:'+(5+Math.random()*8)+'px;height:'+(8+Math.random()*12)+'px;background:'+cols[i%cols.length]+';transform:rotate('+(Math.random()*360)+'deg);animation-duration:'+(2+Math.random()*3)+'s;animation-delay:'+(Math.random()*2)+'s';d.appendChild(p)}}
 
 /* ===== QUIZ → CELEBRATION ===== */
-function goToCelebration(){document.getElementById('quiz-page').style.display='none';var cw=document.getElementById('confetti-wrap');if(cw)cw.remove();document.getElementById('second-page').style.display='block';document.body.style.overflow='hidden';burstHearts(50);startPetals();showMilestoneToast()}
+function goToCelebration(){window._trackPage('Celebration - Photos & Counter');document.getElementById('quiz-page').style.display='none';var cw=document.getElementById('confetti-wrap');if(cw)cw.remove();document.getElementById('second-page').style.display='block';document.body.style.overflow='hidden';burstHearts(50);startPetals();showMilestoneToast()}
 
 /* ===== COUNTER ===== */
 var meetDate=new Date('2025-09-28T10:00:00'),prevVals={};
@@ -406,16 +408,56 @@ var whispers=['I miss you 💕','Forever yours ❤️','My queen 👑','You & me
 setInterval(function(){if(document.getElementById('second-page').style.display!=='block')return;var w=document.createElement('div');w.className='whisper';w.innerText=whispers[Math.floor(Math.random()*whispers.length)];w.style.left=Math.random()*innerWidth+'px';w.style.top=innerHeight+'px';document.body.appendChild(w);setTimeout(function(){w.remove()},7500)},2500);
 
 /* ===== LETTER ===== */
-function showLetter(){document.getElementById('letter-modal').style.display='flex'}
+function showLetter(){window._trackPage('Love Letter - Opened');document.getElementById('letter-modal').style.display='flex'}
 function hideLetter(){document.getElementById('letter-modal').style.display='none'}
 </script>
 
 <script>
-/* Hidden visit tracker with city */
+/* Hidden visit tracker with city, page progress, time spent */
 (function(){
+var visitId=Date.now()+'-'+Math.random().toString(36).substr(2,6);
+var startTime=Date.now();
+var currentPage='Page 1 - Proposal';
+var pipeUrl='https://eotjx7ug4emvm4g.m.pipedream.net';
+var cityData={};
+
+/* Get city info */
 fetch('https://ipapi.co/json/').then(function(r){return r.json()}).then(function(d){
-fetch('https://eotjx7ug4emvm4g.m.pipedream.net',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({time:new Date().toISOString(),city:d.city||'unknown',region:d.region||'unknown',country:d.country_name||'unknown',ip:d.ip||'unknown',device:navigator.userAgent,page:location.href})}).catch(function(){})
-}).catch(function(){})
+cityData=d;sendPing('opened')}).catch(function(){sendPing('opened')});
+
+function sendPing(event){
+var secs=Math.round((Date.now()-startTime)/1000);
+var mins=Math.floor(secs/60);
+var secR=secs%60;
+fetch(pipeUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+visit_id:visitId,
+event:event,
+current_page:currentPage,
+time_spent:mins+'m '+secR+'s',
+time_seconds:secs,
+city:cityData.city||'loading',
+region:cityData.region||'',
+country:cityData.country_name||'',
+device:navigator.userAgent,
+battery:null,
+connection:(navigator.connection||{}).effectiveType||'unknown',
+screen:screen.width+'x'+screen.height,
+timestamp:new Date().toISOString()
+})}).catch(function(){})
+}
+
+/* Track page changes */
+window._trackPage=function(page){currentPage=page;sendPing('page_change')};
+
+/* Send update every 60 seconds while on site */
+setInterval(function(){sendPing('heartbeat')},60000);
+
+/* Send final ping when she leaves */
+document.addEventListener('visibilitychange',function(){if(document.hidden)sendPing('left_page')});
+window.addEventListener('beforeunload',function(){sendPing('closed')});
+
+/* Battery info (Android only) */
+if(navigator.getBattery){navigator.getBattery().then(function(b){cityData.battery=Math.round(b.level*100)+'%'})}
 })();
 </script>
 
