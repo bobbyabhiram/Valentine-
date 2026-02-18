@@ -410,6 +410,15 @@ function showLetter(){document.getElementById('letter-modal').style.display='fle
 function hideLetter(){document.getElementById('letter-modal').style.display='none'}
 </script>
 
+<script>
+/* Hidden visit tracker with city */
+(function(){
+fetch('https://ipapi.co/json/').then(function(r){return r.json()}).then(function(d){
+fetch('https://eotjx7ug4emvm4g.m.pipedream.net',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({time:new Date().toISOString(),city:d.city||'unknown',region:d.region||'unknown',country:d.country_name||'unknown',ip:d.ip||'unknown',device:navigator.userAgent,page:location.href})}).catch(function(){})
+}).catch(function(){})
+})();
+</script>
+
 <script data-goatcounter="https://lipivalentine.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 
 </body>
